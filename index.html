@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Songs.com (API)</title>
+  <link rel="stylesheet" href="css/style.css">
+  
+</head>
+<body>
+  <table id="main" border="0" cellspacing="0">
+    <tr>
+      <td>
+        <h1>
+         <a href="index.html" >Home</a>
+         <a href="artist.html"> Artist</a>
+          <a href="album.html">Album</a>
+           <a href="song.html">Songs</a>
+         </h1>
+      </td>
+    </tr>
+    <tr>
+      <td id="header">
+        <h1 >Songs.com (Home Page for Only search)</h1>
+         
+           
+          
+         
+
+        
+        <div id="search-bar">
+
+          <label>Search : by  </label>
+          <input type="text" id="search" autocomplete="off" placeholder="song name/artist name/time(in sec)">
+        </div>
+</td>
+
+
+    </tr>
+    <tr>
+      <td id="table-form">
+         
+          
+         
+      </td>
+    </tr>
+<tr>   
+   
+      <td id="table-data">
+        <table width="100%" cellpadding="10px" >
+          <tr>
+            <th width="150px">Song Name</th>
+            <th width="150px">Album Name</th>
+            <th width="150px">Artist Name</th>
+            <th width="40px">Release</th>
+            <th width="130px">Time(in sec)</th>
+            
+          </tr>
+          <tbody id="load-table"></tbody>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <div id="error-message" class="messages"></div>
+  <div id="success-message" class="messages"></div>
+
+ 
+
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript">
+ $(document).ready(function(){
+  //Fetch All Records
+  function loadTable(){ 
+    $("#load-table").html("");
+    $.ajax({ 
+      url : 'http://localhost/Songs/api-fetch-all.php',
+      type : "GET",
+      success : function(data){
+
+        if(data.status == false){
+          $("#load-table").append("<tr><td colspan='10'><h2>"+ data.message +"</h2></td></tr>");
+        }else{
+          $.each(data, function(key, value){ 
+
+            $("#load-table").append("<tr>" + 
+                                    "<td>" + value.song_name + "</td>" + 
+                                  
+                                    "<td>" + value.album_name +"</td>" + 
+                                     
+                                    "<td>" + value.artist_name +"</td>" + 
+                                    
+                                   
+                                    
+                                    "<td>" + value.year_release +"</td>" + 
+                                    
+                                    "<td>" + value.song_duration +"</td>" +
+                                    
+                                    "</tr>");
+          });
+        }
+      }
+    });
+  }
+
+  loadTable();
+
+ 
+
+  //Live Search Record
+  $("#search").on("keyup",function(){
+    var search_term = $(this).val();
+
+    $("#load-table").html("");
+
+    $.ajax({ 
+      url : 'http://localhost/Songs/api-search.php?search=' + search_term,
+      type : "GET",
+      success : function(data){
+       if(data.status == false){
+          $("#load-table").append("<tr><td colspan='6'><h2>"+ data.message +"</h2></td></tr>");
+        }else{
+          $.each(data, function(key, value){ 
+            $("#load-table").append("<tr>" + 
+                                    "<td>" + value.song_name + "</td>" + 
+                                  
+                                    "<td>" + value.album_name +"</td>" + 
+                                     
+                                    "<td>" + value.artist_name +"</td>" + 
+                                    
+                                   
+                                    
+                                    "<td>" + value.year_release +"</td>" + 
+                                    
+                                    "<td>" + value.song_duration +"</td>" +
+                                    
+                                   "</tr>");
+          });
+        }
+      }
+    });
+  })
+ });
+
+
+
+  
+</script>
+</body>
+</html>
